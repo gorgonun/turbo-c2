@@ -1,0 +1,5 @@
+from turbo_c2.domain.gui.external_job_group_definition import ExternalJobGroupDefinition
+from turbo_c2.helpers.dynamic_pydantic_serde import dynamic_pydantic_serde
+
+
+ExternalJobGroupDefinitionSerDe = dynamic_pydantic_serde(ExternalJobGroupDefinition)
