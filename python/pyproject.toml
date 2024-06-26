@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "turbo_c2"
+version = "0.0.1a1"
+description = ""
+authors = ["Patrick V. Leguizamon"]
+readme = "README.md"
+packages = [{include = "turbo_c2", from="src"}]
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ray = {version = "2.23.0", extras = ["serve"]}
+mypy = "^1.5.1"
+prometheus-client = "^0.17.1"
+fastapi = "^0.104.1"
+pydantic = "^2.5.3"
+deprecated = "^1.2.14"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.4"
+pytest-asyncio = "^0.23.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+asyncio_mode = "auto"
