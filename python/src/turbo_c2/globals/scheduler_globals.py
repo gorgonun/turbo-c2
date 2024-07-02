@@ -1,10 +1,8 @@
 from dataclasses import dataclass
 from typing import Any, Hashable, Tuple, Type
 
-import ray
 from turbo_c2.abstractions.job_group_with_instances import JobGroupWithInstances
 from turbo_c2.central_api.default_central_api import DefaultCentralApi
-from turbo_c2.central_queue_event_manager.central_queue_event_manager import CentralQueueEventManager
 from turbo_c2.config.config import Config
 from turbo_c2.extra_api.default_extra_api import DefaultExtraApi
 from turbo_c2.helpers.path_mapping import PathMapping
@@ -54,7 +52,6 @@ class SchedulerGlobals:
     job_api_mapping: dict[str, Type[JobApi]] = {}
     queue_mapping: dict[str, Type[EBFQueue]] = {}
     central_api_mapping: dict[str, Type[DefaultCentralApi]] = {}
-    central_queue_event_manager_mapping: dict[str, Type[CentralQueueEventManager]] = {}
     state_machine_mapping: dict[str, Any] = {}
     global_mapping: dict[str, Any] = {}
     config: Config

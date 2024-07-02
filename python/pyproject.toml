@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "turbo_c2"
-version = "0.0.1a1"
+name = "turbo-c2"
+version = "0.0.1a2"
 description = ""
 authors = ["Patrick V. Leguizamon"]
 readme = "README.md"

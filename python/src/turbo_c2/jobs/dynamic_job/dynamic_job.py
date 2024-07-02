@@ -732,6 +732,9 @@ class DynamicJob(RemoteJob, NeedsCentralApi):
                     else len(result)
                 )
                 async for unique_result in result:
+                    if self.finished_event.is_set():
+                        break
+
                     chunks.append(self.prepare_job_output(unique_result))
                     if len(chunks) == chunk_size:
                         await outputs[0].put_iter(chunks)
@@ -743,6 +746,8 @@ class DynamicJob(RemoteJob, NeedsCentralApi):
             else:
                 chunks = []
                 for unique_result in result:
+                    if self.finished_event.is_set():
+                        break
                     chunks.append(self.prepare_job_output(unique_result))
                     if len(chunks) == chunk_size:
                         await outputs[0].put_iter(chunks)
@@ -816,7 +821,7 @@ class DynamicJob(RemoteJob, NeedsCentralApi):
 
     async def graceful_shutdown(self):
         if self.input_queue:
-            await self.input_queue.finish(self.name)
+            self.finished_event.set()
 
     async def on_job_execution_exception(self, exception: Exception):
         print("Exception on job execution", self.__job_instance.job_definition.name)
