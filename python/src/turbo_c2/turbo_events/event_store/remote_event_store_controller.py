@@ -23,7 +23,6 @@ class RemoteEventStoreController(EventStoreController):
         before_put_events = time.perf_counter()
         result = await self.__event_store.put_events.remote(events, acquire_lock)
         after_put_events = time.perf_counter()
-        print(f"put_events took {after_put_events - before_put_events} seconds")
         return result
     
     async def run(self):

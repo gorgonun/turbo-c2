@@ -10,7 +10,7 @@ class ManagedJob(Job, abc.ABC):
         self.__single_run = single_run
         self.__wait_time = wait_time
         self.__finished_event = finished_event
-        self.__pause_event = pause_event
+        self.__running_event = pause_event
         super().__init__(name=name)
 
     @property
@@ -28,16 +28,17 @@ class ManagedJob(Job, abc.ABC):
         return self.__finished_event
     
     @property
-    def pause_event(self) -> asyncio.Event:
-        if not self.__pause_event:
-            self.__pause_event = asyncio.Event()
-        return self.__pause_event
+    def running_event(self) -> asyncio.Event:
+        if not self.__running_event:
+            self.__running_event = asyncio.Event()
+            self.__running_event.set()
+        return self.__running_event
     
     async def pause(self):
-        self.pause_event.set()
+        self.running_event.clear()
 
     async def resume(self):
-        self.pause_event.clear()
+        self.running_event.set()
 
     @abc.abstractmethod
     async def can_run(self):
@@ -62,9 +63,9 @@ class ManagedJob(Job, abc.ABC):
             return self
 
         while await self.can_run():
-            if self.pause_event.is_set():
+            if not self.running_event.is_set():
                 self.logger.debug("ManagedJob - run - pause_event is set")
-                await self.pause_event.wait()
+                await self.running_event.wait()
 
             await self.run_defined_job()
             

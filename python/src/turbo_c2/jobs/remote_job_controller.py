@@ -144,7 +144,9 @@ class RemoteJobController(DefaultJobController[JobInstance]):
 
     async def finished(self, timeout: int | None = 0.0001):
         async def wait_return(key: str, value: Coroutine[Any, Any, Any]):
-            await value
+            # FIXME: Avoid kill job, let it finish
+            with contextlib.suppress(RayActorError):
+                await value
             return key
 
         if not self.__finished:
@@ -153,7 +155,7 @@ class RemoteJobController(DefaultJobController[JobInstance]):
                 await asyncio.wait_for(self.__has_started.acquire(), timeout=timeout)
 
                 self.__logger.info(f"Waiting for {self.job_instance.name} to finish")
-                if len(self.__runs) == 0 and self.job_instance.job_definition.single_run:
+                if len(self.__actors) == 0 and self.job_instance.job_definition.single_run:
                     self.__finished = True
                     break
 
@@ -163,7 +165,7 @@ class RemoteJobController(DefaultJobController[JobInstance]):
                 self.__finished = len(result_refs) == 0
 
                 for ready_ref in ready_refs:
-                    self.__runs.pop(await ready_ref)
+                    self.__runs.pop(ready_ref.result())
                     self.replicas -= 1
                     await self.tc2_job_replicas_counter.set(value=self.replicas)
 
@@ -238,14 +240,16 @@ class RemoteJobController(DefaultJobController[JobInstance]):
     async def graceful_shutdown(self, replicas: int | None = None):
         self.__logger.info(f"Graceful shutdown for {self.job_instance.name} for replicas", replicas)
         fixed_replicas = replicas or self.replicas
+        current_actors = list(self.__actors)
 
         for i in range(fixed_replicas):
             actor = self.__actors[i]
             await actor.graceful_shutdown.remote()
-            self.__actors.pop(i)
 
             with contextlib.suppress(RayActorError):
                 ray.kill(actor)
+        
+        self.__actors = current_actors[fixed_replicas:]
 
     async def add_central_api(self, central_api: DefaultCentralApi):
         self.__logger.info(f"Adding central api to {self.job_instance.name}")
