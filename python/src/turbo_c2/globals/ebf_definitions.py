@@ -1,12 +1,8 @@
 import os
 from typing import Any, Type
 
-import ray
 from turbo_c2.abstractions.job_group import JobGroup
 from turbo_c2.central_api.default_central_api import DefaultCentralApi
-from turbo_c2.central_queue_event_manager.central_queue_event_manager import (
-    CentralQueueEventManager,
-)
 from turbo_c2.clients.prometheus.prometheus_http_client import PrometheusHttpClient
 from turbo_c2.config.config import DefaultConfig
 from turbo_c2.domain.gui.layout_definition import LayoutDefinition
@@ -57,9 +53,6 @@ from turbo_c2.queues.queue_creator import QueueCreator
 from turbo_c2.queues.remote_queue_creator import RemoteQueueCreator
 from turbo_c2.queues.simple_ebf_queue import SimpleEbfQueue
 from turbo_c2.central_api.central_api_api import CentralApiApi
-from turbo_c2.central_queue_event_manager.remote_central_queue_event_manager import (
-    RemoteCentralQueueEventManager,
-)
 from turbo_c2.scheduler.remote_scheduler import RemoteScheduler
 from turbo_c2.scheduler.scheduler import Scheduler
 from turbo_c2.globals.scheduler_globals import SchedulerGlobals
@@ -116,9 +109,6 @@ def setup(scheduler_globals_object: Type[SchedulerGlobals]):
     scheduler_globals_object.central_api_mapping: dict[str, Type[DefaultCentralApi]] = {
         "remote": CentralApiApi
     }
-    scheduler_globals_object.central_queue_event_manager_mapping: dict[
-        str, Type[CentralQueueEventManager]
-    ] = {"remote": RemoteCentralQueueEventManager}
     scheduler_globals_object.state_machine_mapping: dict[str, Any] = {
         "job_controller": {"remote": None, "local": None}
     }
