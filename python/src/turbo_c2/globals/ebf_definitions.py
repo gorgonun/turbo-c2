@@ -4,7 +4,7 @@ from typing import Any, Type
 from turbo_c2.abstractions.job_group import JobGroup
 from turbo_c2.central_api.default_central_api import DefaultCentralApi
 from turbo_c2.clients.prometheus.prometheus_http_client import PrometheusHttpClient
-from turbo_c2.config.config import DefaultConfig
+from turbo_c2.domain.scheduler.config import DefaultConfig
 from turbo_c2.domain.gui.layout_definition import LayoutDefinition
 from turbo_c2.domain.gui.layout_element_command import LayoutElementCommand
 from turbo_c2.external_api.json_local_storage_external_api import JsonLocalStorageExternalApi

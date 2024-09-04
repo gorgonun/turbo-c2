@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 from turbo_c2.central_api.default_central_api import DefaultCentralApi
-from turbo_c2.config.config import Config
+from turbo_c2.domain.scheduler.config import Config
 from turbo_c2.queues.queue_reference import QueueReference
 
 from turbo_c2.globals.scheduler_globals import SchedulerGlobals

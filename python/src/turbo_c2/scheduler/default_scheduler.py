@@ -482,27 +482,15 @@ class DefaultScheduler:
         metrics_client = prometheus_client_actor_definition.actor_ref
         deployments = []
 
-        allowed_origins = [
-                f"http://localhost",
-                f"http://localhost:5173",
-                f"http://localhost:5174",
-        ]
-
-        custom_host = os.environ.get("CUSTOM_HOST")
-        if custom_host:
-            allowed_origins.extend([
-                f"{custom_host}",
-                f"{custom_host}:5173",
-                f"{custom_host}:5174",
-            ])
-
         app = FastAPI()
         app.add_middleware(
             CORSMiddleware,
-            allow_origins=allowed_origins,
+            allow_origins=get_scheduler_globals().config.cors_origins,
             allow_methods=["*"],
             allow_headers=["*"],
         )
+
+        serve.start(http_options={"host": get_scheduler_globals().config.serve_host})
 
         for _, resource in get_scheduler_globals().get_resource_mappings(
             prefix="init/deployment_constructor"
