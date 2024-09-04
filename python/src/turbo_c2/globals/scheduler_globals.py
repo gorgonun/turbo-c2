@@ -3,7 +3,7 @@ from typing import Any, Hashable, Tuple, Type
 
 from turbo_c2.abstractions.job_group_with_instances import JobGroupWithInstances
 from turbo_c2.central_api.default_central_api import DefaultCentralApi
-from turbo_c2.config.config import Config
+from turbo_c2.domain.scheduler.config import Config
 from turbo_c2.extra_api.default_extra_api import DefaultExtraApi
 from turbo_c2.helpers.path_mapping import PathMapping
 from turbo_c2.interfaces.central_api import CentralApi
@@ -54,7 +54,7 @@ class SchedulerGlobals:
     central_api_mapping: dict[str, Type[DefaultCentralApi]] = {}
     state_machine_mapping: dict[str, Any] = {}
     global_mapping: dict[str, Any] = {}
-    config: Config
+    config: Config = None
     _instance = None
 
     def __new__(cls):
